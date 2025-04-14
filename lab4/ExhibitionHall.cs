@@ -25,7 +25,18 @@ namespace lab4
                 nameOfHall = value;
             }
         }
-        public List<Exhibit> Exhibits => exhibits;
+        public List<Exhibit> Exhibits
+        {
+            get { return exhibits; }
+            set 
+            { 
+                if (value == null)
+                {
+                    throw new ArgumentNullException("Exhibits list can`t be null");
+                }
+                exhibits = value;
+            }
+        }
         public void AddExhibit(Exhibit exhibit)
         {
             if (exhibit == null)
@@ -44,7 +55,7 @@ namespace lab4
             {
                 foreach (Exhibit exhibit in exhibits)
                 {
-                    sb.AppendLine($"{exhibit.WorkOfArt.NameOfArt}: ({exhibit.WorkOfArt.YearOfCreation}), cost: {exhibit.CostOfExhibit} $");
+                    sb.AppendLine($"{exhibit.WorkOfArt.NameOfArt}: ({exhibit.WorkOfArt.YearOfCreation}), cost: {exhibit.CostOfExhibit}, overall size: {exhibit.WorkOfArt.Length}x{exhibit.WorkOfArt.Width}x{exhibit.WorkOfArt.Height}$");
                 }
             }
             return sb.ToString();
