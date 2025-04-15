@@ -12,8 +12,8 @@ namespace lab4
         private List<Exhibit> exhibits;
         public ExhibitionHall(string nameOfHall)
         {
-            this.nameOfHall = nameOfHall;
-            this.exhibits = new List<Exhibit>();
+            this.NameOfHall = nameOfHall;
+            this.Exhibits = new List<Exhibit>();
         }
         public string NameOfHall
         {

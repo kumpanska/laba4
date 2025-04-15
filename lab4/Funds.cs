@@ -12,8 +12,8 @@ namespace lab4
         private string addressOfFund;
         public Funds(string nameOfFund, string addressOfFund)
         {
-            this.nameOfFund = nameOfFund;
-            this.addressOfFund = addressOfFund;
+            this.Name = nameOfFund;
+            this.Address = addressOfFund;
         }
         public string Name
         {

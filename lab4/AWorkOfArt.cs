@@ -14,11 +14,11 @@ namespace lab4
         private double height, width, length;
         public AWorkOfArt(string nameOfArt, int yearOfCreation, double width, double height, double length)
         {
-            this.nameOfArt = nameOfArt;
-            this.yearOfCreation = yearOfCreation;
-            this.width = width;
-            this.height = height;
-            this.length = length;
+            this.NameOfArt = nameOfArt;
+            this.YearOfCreation = yearOfCreation;
+            this.Width = width;
+            this.Height = height;
+            this.Length = length;
         }
         public string NameOfArt
         {

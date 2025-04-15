@@ -14,10 +14,10 @@ namespace lab4
         private int costOfExhibit;
         public Exhibit(AWorkOfArt workOfArt, Funds funds, Placement placement, int costOfExhibit)
         {
-            this.workOfArt = workOfArt;
-            this.funds = funds;
-            this.placement = placement;
-            this.costOfExhibit = costOfExhibit;
+            this.WorkOfArt = workOfArt;
+            this.Funds = funds;
+            this.Placement = placement;
+            this.CostOfExhibit = costOfExhibit;
         }
         public AWorkOfArt WorkOfArt
         {
