@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.Text.RegularExpressions;
 namespace lab4
 {
     public class Funds
@@ -31,7 +31,21 @@ namespace lab4
             set
             {
                 if (string.IsNullOrEmpty(value))
+                {
                     throw new ArgumentException("Address can't be empty");
+                }
+                if (!Regex.IsMatch(value, @"[a-zA-Zа-яА-ЯіІїЇєЄ]"))
+                {
+                    throw new ArgumentException("Address must contain at least one letter.");
+                }
+                if (!Regex.IsMatch(value, @"\d+(/\d+)?"))
+                {
+                    throw new ArgumentException("Address must contain at least one number, optionally in format like '7/1'.");
+                }
+                if (!value.Contains(','))
+                {
+                    throw new ArgumentException("Address must contain a comma (to separate street and building)");
+                }
                 addressOfFund = value;
             }
         }
