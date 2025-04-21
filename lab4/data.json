@@ -1,0 +1,80 @@
+﻿{
+  "NameOfExhibitionHall": "A Masterpieces by time",
+  "Exhibits": [
+    {
+      "AWorkOfArt": {
+        "NameOfAWorkOfArt": "Starry Night",
+        "YearOfCreation": 1889,
+        "Width": 73.7,
+        "Height": 92.1,
+        "Length": 3.0
+      },
+      "Fund": {
+        "NameOfFund": "National Gallery",
+        "Address": "Trafalgar Square, London, 123"
+      },
+      "Placement": 0,
+      "CostOfExhibit": 200000000
+    },
+    {
+      "AWorkOfArt": {
+        "NameOfAWorkOfArt": "Mona Lisa",
+        "YearOfCreation": 1503,
+        "Width": 53.0,
+        "Height": 77.0,
+        "Length": 2.5
+      },
+      "Fund": {
+        "NameOfFund": "Louvre Museum",
+        "Address": "Rue de Rivoli, Paris, 75001"
+      },
+      "Placement": 0,
+      "CostOfExhibit": 860000000
+    },
+    {
+      "AWorkOfArt": {
+        "NameOfAWorkOfArt": "The Thinker",
+        "YearOfCreation": 1904,
+        "Width": 70.0,
+        "Height": 180.0,
+        "Length": 70.0
+      },
+      "Fund": {
+        "NameOfFund": "The Rodin Museum",
+        "Address": "77 Rue de Varenne, Paris, 75007"
+      },
+      "Placement": 2,
+      "CostOfExhibit": 11200000
+    },
+    {
+      "AWorkOfArt": {
+        "NameOfAWorkOfArt": "Crystal Sculpture",
+        "YearOfCreation": 2015,
+        "Width": 30.0,
+        "Height": 45.0,
+        "Length": 30.0
+      },
+      "Fund": {
+        "NameOfFund": "New York Contemporary Art Fund",
+        "Address": "Broadway Avenue, New York, 10001"
+      },
+      "Placement": 1,
+      "CostOfExhibit": 250000
+    },
+    {
+      "AWorkOfArt": {
+        "NameOfAWorkOfArt": "Bird in Space",
+        "YearOfCreation": 1923,
+        "Width": 22.9,
+        "Height": 120.6,
+        "Length": 16.5
+      },
+      "Fund": {
+        "NameOfFund": "Museum of Modern Art",
+        "Address": "11 West 53rd Street, New York, 10019"
+      },
+      "Placement": 1,
+      "CostOfExhibit": 27456000
+    }
+  ]
+}
