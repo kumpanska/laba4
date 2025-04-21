@@ -12,7 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using System.Text.Json;
+using System.IO;
 namespace lab4
 {
     /// <summary>
@@ -20,9 +21,50 @@ namespace lab4
     /// </summary>
     public partial class MainWindow : Window
     {
+        private const string savePath = "data.json";
+        private ExhibitionHall currentHall;
         public MainWindow()
         {
             InitializeComponent();
+            LoadData();
+            
+        }
+        private void LoadData()
+        {
+            try
+            {
+                string json = File.ReadAllText(savePath);
+                DTOExhibitionHall dto = JsonSerializer.Deserialize<DTOExhibitionHall>(json);
+                currentHall = ExhibitionHallMapper.FromDTO(dto);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while loading data: " + ex.Message);
+                currentHall = new ExhibitionHall("Error Hall");
+            }
+        }
+        private void SaveData()
+        {
+            try 
+            {
+                DTOExhibitionHall dto = ExhibitionHallMapper.ToDTO(currentHall);
+                string json = JsonSerializer.Serialize(dto, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(savePath, json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error while saving data: " + ex.Message);
+            }
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            SaveData();
+        }
+
+        private void OpenHall_Click(object sender, RoutedEventArgs e)
+        {
+            ExhibitionHallForm form = new ExhibitionHallForm(currentHall);
+            form.ShowDialog();
         }
     }
 }

@@ -37,7 +37,7 @@
         <Label Grid.Row="4" Grid.Column="0" Content="Length (cm):" Margin="0,10,0,0"/>
         <TextBox Grid.Row="4" Grid.Column="1" x:Name="txtLength" Margin="5,10,463,36"/>
 
-        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="txtError" Foreground="Red" TextWrapping="Wrap" Margin="5,5,0,0"/>
+        <TextBlock Grid.Row="5" Grid.Column="1" x:Name="txtError" Foreground="DarkRed" TextWrapping="Wrap" Margin="5,5,0,0"/>
 
         <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="btnSave" Content="Save and exit" Width="150" Margin="0,0,10,0" Click="btnSave_Click"/>
