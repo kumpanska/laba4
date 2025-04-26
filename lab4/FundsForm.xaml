@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
         mc:Ignorable="d"
-        Title="FundsForm" Height="450" Width="800">
+        Title="FundsForm" Height="450" Width="800" Closing="Window_Closing">
     <Grid Margin = "10" Background="Beige">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -26,8 +26,8 @@
         
         <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtError" Foreground="DarkRed" TextWrapping="Wrap" Margin="5,5,0,0"/>
         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="btnSave" Content="Save and exit" Width="150" Margin="0,0,10,0" Click="btnSave_Click"/>
-            <Button x:Name="btnCancel" Content="Cancel and exit" Width="150" Click="btnCancel_Click"/>
+            <Button x:Name="btnSave" Content="Save and close" Width="150" Margin="0,0,10,0" Click="btnSave_Click"/>
+            <Button x:Name="btnCancel" Content="Cancel and close" Width="150" Click="btnCancel_Click"/>
         </StackPanel>
     </Grid>
 </Window>
