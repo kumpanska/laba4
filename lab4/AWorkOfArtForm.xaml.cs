@@ -39,6 +39,7 @@ namespace lab4
             txtHeight.Text = artwork.Height.ToString();
             txtLength.Text = artwork.Length.ToString();
         }
+        public AWorkOfArt ArtworkResult => currentArtwork;
         private bool IsDataChanged()
         {
             return txtName.Text != originalName
