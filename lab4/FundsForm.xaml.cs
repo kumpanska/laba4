@@ -23,6 +23,7 @@ namespace lab4
         private string originalAddress;
         private Funds currentFund;
         private bool isSaved = false;
+        public Funds FundResult => currentFund;
         public FundsForm(Funds fund)
         {
             InitializeComponent();
