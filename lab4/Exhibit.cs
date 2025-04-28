@@ -44,7 +44,10 @@ namespace lab4
         { get { return placement; }
             set { placement = value; }
         }
-
+        public override string ToString()
+        {
+            return $"{WorkOfArt.NameOfArt} ({WorkOfArt.YearOfCreation}), cost: {CostOfExhibit} $, overall size: {WorkOfArt.Length}x{WorkOfArt.Width}x{WorkOfArt.Height}";
+        }
         public int CostOfExhibit
         {
             get { return costOfExhibit; }
