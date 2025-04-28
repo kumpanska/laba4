@@ -32,7 +32,7 @@ namespace lab4
             lstFund.ItemsSource = funds;
             cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
         }
-
+       
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (IsDataChanged() && SaveExhibit())
@@ -66,13 +66,11 @@ namespace lab4
                 Funds selectedFund = lstFund.SelectedItem as Funds;
                 Placement selectedPlacement = (Placement)cboPlacement.SelectedItem;
                 int cost = int.TryParse(txtCost.Text, out int parsedCost) ? parsedCost : 0;
-                DTOExhibit dtoExhibit = ExhibitMapper.ToDTO(new Exhibit(selectedArtwork, selectedFund, selectedPlacement, cost));
-
+                ExhibitResult = new Exhibit(selectedArtwork, selectedFund, selectedPlacement, cost);
                 isSaved = true;
-               
                 return true;
             }
-            catch (ArgumentException ex) 
+            catch (ArgumentException ex)
             {
                 txtError.Text = ex.Message;
                 return false;
@@ -139,7 +137,7 @@ namespace lab4
                 MessageBox.Show("Please select a fund to edit.");
             }
         }
-        private void Window_CLosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!isSaved && IsDataChanged())
             {

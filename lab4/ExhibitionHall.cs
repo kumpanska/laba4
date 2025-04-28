@@ -63,9 +63,10 @@ namespace lab4
 
         public string ToShortString()
         {
-            if (exhibits.Count == 0)
-                return $"{nameOfHall}: no exhibits.";
-            return $"{nameOfHall}: creation year from {exhibits.First().WorkOfArt.YearOfCreation} to {exhibits.Last().WorkOfArt.YearOfCreation}";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine($"Exhibition Hall: {NameOfHall}");
+            sb.AppendLine($"Exhibits: {Exhibits.Count} items from {Exhibits.Min(e => e.WorkOfArt.YearOfCreation)} to {Exhibits.Max(e => e.WorkOfArt.YearOfCreation)}");
+            return sb.ToString();
         }
     }
 }
