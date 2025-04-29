@@ -21,7 +21,7 @@ namespace lab4
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string savePath = "data.json";
+        private const string savePath = "C:\\c#labs\\lab4\\lab4\\data.json";
         private ExhibitionHall currentHall;
         public MainWindow()
         {
@@ -31,16 +31,24 @@ namespace lab4
         }
         private void LoadData()
         {
-            try
+            if (File.Exists(savePath))
             {
-                string json = File.ReadAllText(savePath);
-                DTOExhibitionHall dto = JsonSerializer.Deserialize<DTOExhibitionHall>(json);
-                currentHall = ExhibitionHallMapper.FromDTO(dto);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error while loading data: " + ex.Message);
-                currentHall = new ExhibitionHall("Error Hall");
+                try
+                {
+                    string json = File.ReadAllText(savePath);
+                    DTOExhibitionHall dto = JsonSerializer.Deserialize<DTOExhibitionHall>(json);
+                    if (dto == null || string.IsNullOrEmpty(dto.NameOfExhibitionHall))
+                    {
+                        throw new InvalidDataException("Invalid data or not full data in JSON");
+                    }
+                    currentHall = ExhibitionHallMapper.FromDTO(dto);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error while loading data: " + ex.Message);
+                    currentHall = new ExhibitionHall("Error Hall");
+                }
             }
         }
         private void SaveData()
@@ -66,5 +74,6 @@ namespace lab4
             ExhibitionHallForm form = new ExhibitionHallForm(currentHall);
             form.ShowDialog();
         }
+
     }
 }

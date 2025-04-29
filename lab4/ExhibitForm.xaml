@@ -31,14 +31,14 @@
 
             <Label Grid.Row="0" Grid.Column="0" Content="Work of Art:" VerticalAlignment="Center" Margin="0,0,5,5"/>
             <ListBox x:Name="lstWorkOfArt" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,10"
-                     DisplayMemberPath="NameOfArt" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                     DisplayMemberPath="NameOfArt" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstWorkOfArt_SelectionChanged"/>
             <Grid Grid.Row="1" Grid.Column="2" Margin="5,0,0,10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Content="Add" Height="30" Margin="0,0,0,5" Click="btnAddWorkOfArt_Click"/>
-                <Button Grid.Row="1" Content="Edit" Height="30" Click="btnEditWorkOfArt_Click" IsEnabled="False"/>
+                <Button Grid.Row="1" x:Name="btnEditWorkOfArt" Content="Edit" Height="30" Click="btnEditWorkOfArt_Click" IsEnabled="False"/>
             </Grid>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Placement:" VerticalAlignment="Center" Margin="0,0,5,5"/>
@@ -49,14 +49,14 @@
 
             <Label Grid.Row="4" Grid.Column="0" Content="Fund:" VerticalAlignment="Center" Margin="0,10,5,5"/>
             <ListBox x:Name="lstFund" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0"
-                     DisplayMemberPath="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                     DisplayMemberPath="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstFund_SelectionChanged"/>
             <Grid Grid.Row="5" Grid.Column="2" Margin="5,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Content="Add" Height="30" Margin="0,0,0,5" Click="btnAddFund_Click"/>
-                <Button Grid.Row="1" Content="Edit" Height="30" Click="btnEditFund_Click" IsEnabled="False"/>
+                <Button Grid.Row="1" x:Name="btnEditFund" Content="Edit" Height="30" Click="btnEditFund_Click" IsEnabled="False"/>
             </Grid>
         </Grid>
 

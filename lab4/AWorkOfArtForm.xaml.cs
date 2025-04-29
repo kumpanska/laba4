@@ -23,21 +23,46 @@ namespace lab4
         private int originalYear;
         private double originalWidth, originalHeight, originalLength;
         private AWorkOfArt currentArtwork;
+        private AWorkOfArt artworkToEdit;
         private bool isSaved = false;
-        public AWorkOfArtForm(AWorkOfArt artwork)
+        private bool isEdit = false;
+        public AWorkOfArtForm()
         {
             InitializeComponent();
-            currentArtwork = artwork;
-            originalName = artwork.NameOfArt;
-            originalYear = artwork.YearOfCreation;
-            originalWidth = artwork.Width;
-            originalHeight = artwork.Height;
-            originalLength = artwork.Length;
-            txtName.Text = artwork.NameOfArt;
-            txtYear.Text = artwork.YearOfCreation.ToString();
-            txtWidth.Text = artwork.Width.ToString();
-            txtHeight.Text = artwork.Height.ToString();
-            txtLength.Text = artwork.Length.ToString();
+            this.Title = "Create New Artwork";
+            currentArtwork = new AWorkOfArt("New Artwork", 2020, 10, 10, 10);
+            txtName.Text = currentArtwork.NameOfArt;
+            txtYear.Text = currentArtwork.YearOfCreation.ToString();
+            txtWidth.Text = currentArtwork.Width.ToString();
+            txtHeight.Text = currentArtwork.Height.ToString();
+            txtLength.Text = currentArtwork.Length.ToString();
+            isEdit = false;
+        }
+        public AWorkOfArtForm(AWorkOfArt artworkToEdit)
+        {
+            InitializeComponent();
+            this.Title = "Edit Artwork";
+            this.artworkToEdit = artworkToEdit;
+            currentArtwork = new AWorkOfArt(
+                artworkToEdit.NameOfArt,
+                artworkToEdit.YearOfCreation,
+                artworkToEdit.Width,
+                artworkToEdit.Height,
+                artworkToEdit.Length
+            );
+
+            originalName = artworkToEdit.NameOfArt;
+            originalYear = artworkToEdit.YearOfCreation;
+            originalWidth = artworkToEdit.Width;
+            originalHeight = artworkToEdit.Height;
+            originalLength = artworkToEdit.Length;
+
+            txtName.Text = artworkToEdit.NameOfArt;
+            txtYear.Text = artworkToEdit.YearOfCreation.ToString();
+            txtWidth.Text = artworkToEdit.Width.ToString();
+            txtHeight.Text = artworkToEdit.Height.ToString();
+            txtLength.Text = artworkToEdit.Length.ToString();
+            isEdit = true;
         }
         public AWorkOfArt ArtworkResult => currentArtwork;
         private bool IsDataChanged()
@@ -61,14 +86,20 @@ namespace lab4
                     throw new ArgumentException("Height must be a valid number.");
                 if (!double.TryParse(txtLength.Text, out double length))
                     throw new ArgumentException("Length must be a valid number.");
-
                 currentArtwork.NameOfArt = name;
                 currentArtwork.YearOfCreation = year;
                 currentArtwork.Width = width;
                 currentArtwork.Height = height;
                 currentArtwork.Length = length;
 
-                DTOAWorkOfArt dto = AWorkOfArtMapper.ToDTO(currentArtwork);
+                if (isEdit)
+                {
+                    artworkToEdit.NameOfArt = currentArtwork.NameOfArt;
+                    artworkToEdit.YearOfCreation = currentArtwork.YearOfCreation;
+                    artworkToEdit.Width = currentArtwork.Width;
+                    artworkToEdit.Height = currentArtwork.Height;
+                    artworkToEdit.Length = currentArtwork.Length;
+                }
 
                 isSaved = true;
                 return true;
@@ -93,7 +124,7 @@ namespace lab4
             DialogResult = false;
             this.Close();
         }
-        private void Window_CLosing(object sender, System.ComponentModel.CancelEventArgs e)
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (!isSaved && IsDataChanged())
             {
@@ -105,6 +136,14 @@ namespace lab4
                     {
                         e.Cancel = true;
                     }
+                    else
+                    {
+                        DialogResult = true;
+                    }
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    DialogResult = false;
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {

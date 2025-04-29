@@ -57,6 +57,7 @@ namespace lab4
         {
             if (SaveExhibit())
             {
+                isSaved = true;
                 DialogResult = true;
                 Close();
             }
@@ -64,6 +65,7 @@ namespace lab4
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            isSaved = true;
             DialogResult = false;
             Close();
         }
@@ -135,6 +137,10 @@ namespace lab4
                 lstFund.ItemsSource = null;
                 lstFund.ItemsSource = fundsList;
                 isDataChanged = true;
+                if (isEdit)
+                {
+                    ExhibitResult.Funds = saveFund;
+                }
             }
         }
 
@@ -149,6 +155,10 @@ namespace lab4
                 lstWorkOfArt.ItemsSource = null;
                 lstWorkOfArt.ItemsSource = artworks;
                 isDataChanged = true;
+                if (isEdit)
+                {
+                    ExhibitResult.WorkOfArt = savedArtwork;
+                }
             }
         }
 
@@ -162,7 +172,12 @@ namespace lab4
                 {
                     lstWorkOfArt.ItemsSource = null;
                     lstWorkOfArt.ItemsSource = artworks;
+                    if (isEdit)
+                    {
+                        ExhibitResult.WorkOfArt = selectedArtwork;
+                    }
                 }
+                
             }
             else
             {
@@ -179,6 +194,10 @@ namespace lab4
                 {
                     lstFund.ItemsSource = null;
                     lstFund.ItemsSource = fundsList;
+                    if (isEdit)
+                    {
+                        ExhibitResult.Funds = selectedFund;
+                    }
                 }
             }
             else
@@ -188,7 +207,7 @@ namespace lab4
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!isSaved && (IsDataChanged() || isDataChanged))
+            if (DialogResult == null && !isSaved && (IsDataChanged() || isDataChanged))
             {
                 MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
@@ -198,12 +217,28 @@ namespace lab4
                     {
                         e.Cancel = true;
                     }
+                    else
+                    {
+                        DialogResult = true;
+                    }
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    DialogResult = false;
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {
                     e.Cancel = true;
                 }
             }
+        }
+        private void lstWorkOfArt_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnEditWorkOfArt.IsEnabled = lstWorkOfArt.SelectedItem != null;
+        }
+        private void lstFund_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            btnEditFund.IsEnabled = lstFund.SelectedItem != null;
         }
     }
 }

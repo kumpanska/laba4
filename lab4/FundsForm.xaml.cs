@@ -21,21 +21,39 @@ namespace lab4
     {
         private string originalFundName;
         private string originalAddress;
+        private Funds fundToEdit;
         private Funds currentFund;
         private bool isSaved = false;
+        private bool isDataChanged = false;
+        private bool isEdit = false;
         public Funds FundResult => currentFund;
-        public FundsForm(Funds fund)
+        public FundsForm()
         {
             InitializeComponent();
-            currentFund = fund;
-            originalFundName = fund.Name;
-            originalAddress = fund.Address;
-            txtName.Text = fund.Name;
-            txtAddress.Text = fund.Address;
+            this.Title = "Create New Fund";
+            currentFund = new Funds("New Fund", "Default Address,10");
+            txtName.Text = currentFund.Name;
+            txtAddress.Text = currentFund.Address;
+            isEdit = false;
         }
+        public FundsForm(Funds fundToEdit)
+        {
+            InitializeComponent();
+            this.Title = "Edit Fund";
+            this.fundToEdit = fundToEdit;
+            currentFund = new Funds(fundToEdit.Name, fundToEdit.Address);
+            originalFundName = fundToEdit.Name;
+            originalAddress = fundToEdit.Address;
+            txtName.Text = fundToEdit.Name;
+            txtAddress.Text = fundToEdit.Address;
+            isEdit = true;
+        }
+
         private bool IsDataChanged()
         {
-            return txtName.Text != originalFundName || txtAddress.Text != originalAddress;
+            return txtName.Text != originalFundName ||
+                   txtAddress.Text != originalAddress ||
+                   isDataChanged;
         }
         private bool SaveFund()
         {
@@ -43,18 +61,31 @@ namespace lab4
             {
                 string fundName = txtName.Text;
                 string address = txtAddress.Text;
+
+                if (string.IsNullOrWhiteSpace(fundName))
+                    throw new ArgumentException("Fund name cannot be empty.");
+                if (string.IsNullOrWhiteSpace(address))
+                    throw new ArgumentException("Address cannot be empty.");
+
                 currentFund.Name = fundName;
                 currentFund.Address = address;
-                DTOFunds dto = FundsMapper.ToDTO(currentFund);
+
+                if (isEdit && fundToEdit != null)
+                {
+                    fundToEdit.Name = currentFund.Name;
+                    fundToEdit.Address = currentFund.Address;
+                }
+
                 isSaved = true;
                 return true;
             }
             catch (ArgumentException ex)
             {
                 txtError.Text = ex.Message;
-                return false;  
+                return false;
             }
         }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (SaveFund())
@@ -71,7 +102,7 @@ namespace lab4
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!isSaved && IsDataChanged())
+            if (DialogResult == null && !isSaved && IsDataChanged())
             {
                 MessageBoxResult result = MessageBox.Show(
                     "Чи зберегти зміни?",
@@ -86,6 +117,14 @@ namespace lab4
                     {
                         e.Cancel = true;
                     }
+                    else
+                    {
+                        DialogResult = true;
+                    }
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    DialogResult = false;
                 }
                 else if (result == MessageBoxResult.Cancel)
                 {
