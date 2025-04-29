@@ -23,6 +23,8 @@ namespace lab4
         private List<AWorkOfArt> artworks;
         private List<Funds> fundsList;
         private bool isSaved = false;
+        private bool isDataChanged = false;
+        private bool isEdit = false;
         public ExhibitForm(List<AWorkOfArt> artworks, List<Funds> funds)
         {
             InitializeComponent();
@@ -31,11 +33,29 @@ namespace lab4
             lstWorkOfArt.ItemsSource = artworks;
             lstFund.ItemsSource = funds;
             cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
+            this.Title = "Create New Exhibit";
         }
-       
+        public ExhibitForm(List<AWorkOfArt> artworks, List<Funds> fundsList, Exhibit existingExhibit)
+        {
+            InitializeComponent();
+            this.artworks = artworks;
+            this.fundsList = fundsList;
+            this.ExhibitResult = existingExhibit;
+            this.isEdit = true;
+            lstWorkOfArt.ItemsSource = artworks;
+            lstFund.ItemsSource = fundsList;
+            cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
+            lstWorkOfArt.SelectedItem = existingExhibit.WorkOfArt;
+            lstFund.SelectedItem = existingExhibit.Funds;
+            cboPlacement.SelectedItem = existingExhibit.Placement;
+            txtCost.Text = existingExhibit.CostOfExhibit.ToString();
+            this.Title = "Edit Exhibit";
+
+        }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (IsDataChanged() && SaveExhibit())
+            if (SaveExhibit())
             {
                 DialogResult = true;
                 Close();
@@ -49,10 +69,21 @@ namespace lab4
         }
         private bool IsDataChanged()
         {
-            return lstWorkOfArt.SelectedItem != null &&
-                   lstFund.SelectedItem != null &&
-                   cboPlacement.SelectedItem != null &&
-                   txtCost.Text != string.Empty;
+            if (!isEdit)
+            {
+                return lstWorkOfArt.SelectedItem != null &&
+                       lstFund.SelectedItem != null &&
+                       cboPlacement.SelectedItem != null &&
+                       !string.IsNullOrWhiteSpace(txtCost.Text);
+            }
+            else
+            {
+                return (lstWorkOfArt.SelectedItem != ExhibitResult.WorkOfArt ||
+                      lstFund.SelectedItem != ExhibitResult.Funds ||
+                      (Placement)cboPlacement.SelectedItem != ExhibitResult.Placement ||
+                      txtCost.Text != ExhibitResult.CostOfExhibit.ToString()
+                      );
+            }
         }
         private bool SaveExhibit()
         {
@@ -62,11 +93,26 @@ namespace lab4
                 {
                     throw new ArgumentException("All fields must be filled.");
                 }
+
+                if (!int.TryParse(txtCost.Text, out int parsedCost) || parsedCost <= 0)
+                {
+                    throw new ArgumentException("Cost must be a positive integer.");
+                }
+
                 AWorkOfArt selectedArtwork = lstWorkOfArt.SelectedItem as AWorkOfArt;
                 Funds selectedFund = lstFund.SelectedItem as Funds;
                 Placement selectedPlacement = (Placement)cboPlacement.SelectedItem;
-                int cost = int.TryParse(txtCost.Text, out int parsedCost) ? parsedCost : 0;
-                ExhibitResult = new Exhibit(selectedArtwork, selectedFund, selectedPlacement, cost);
+                if (isEdit)
+                {
+                    ExhibitResult.WorkOfArt = selectedArtwork;
+                    ExhibitResult.Funds = selectedFund;
+                    ExhibitResult.Placement = selectedPlacement;
+                    ExhibitResult.CostOfExhibit = parsedCost;
+                }
+                else
+                {
+                    ExhibitResult = new Exhibit(selectedArtwork, selectedFund, selectedPlacement, parsedCost);
+                }
                 isSaved = true;
                 return true;
             }
@@ -76,9 +122,11 @@ namespace lab4
                 return false;
             }
         }
+
         private void btnAddFund_Click(object sender, RoutedEventArgs e)
         {
-            Funds newFund = new Funds("","");
+            Funds newFund = new Funds("New Fund", "Default Address,10");
+
             FundsForm form = new FundsForm(newFund);
             if (form.ShowDialog() == true)
             {
@@ -86,12 +134,13 @@ namespace lab4
                 fundsList.Add(saveFund);
                 lstFund.ItemsSource = null;
                 lstFund.ItemsSource = fundsList;
+                isDataChanged = true;
             }
         }
 
         private void btnAddWorkOfArt_Click(object sender, RoutedEventArgs e)
         {
-            AWorkOfArt newArtwork = new AWorkOfArt("", 0, 0, 0, 0);
+            AWorkOfArt newArtwork = new AWorkOfArt("New Artwork", 2020, 10, 10, 10);
             AWorkOfArtForm form = new AWorkOfArtForm(newArtwork);
             if (form.ShowDialog() == true)
             {
@@ -99,7 +148,7 @@ namespace lab4
                 artworks.Add(savedArtwork);
                 lstWorkOfArt.ItemsSource = null;
                 lstWorkOfArt.ItemsSource = artworks;
-            
+                isDataChanged = true;
             }
         }
 
@@ -139,7 +188,7 @@ namespace lab4
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            if (!isSaved && IsDataChanged())
+            if (!isSaved && (IsDataChanged() || isDataChanged))
             {
                 MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
 
