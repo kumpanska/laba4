@@ -22,26 +22,24 @@ namespace lab4
         private string originalFundName;
         private string originalAddress;
         private Funds fundToEdit;
-        private Funds currentFund;
+        private Funds newFund;
         private bool isSaved = false;
         private bool isDataChanged = false;
         private bool isEdit = false;
-        public Funds FundResult => currentFund;
+        public Funds FundResult => newFund;
         public FundsForm()
         {
             InitializeComponent();
-            this.Title = "Create New Fund";
-            currentFund = new Funds("New Fund", "Default Address,10");
-            txtName.Text = currentFund.Name;
-            txtAddress.Text = currentFund.Address;
+            newFund = new Funds("New Fund", "Default Address,10");
+            txtName.Text = newFund.Name;
+            txtAddress.Text = newFund.Address;
             isEdit = false;
         }
         public FundsForm(Funds fundToEdit)
         {
             InitializeComponent();
-            this.Title = "Edit Fund";
             this.fundToEdit = fundToEdit;
-            currentFund = new Funds(fundToEdit.Name, fundToEdit.Address);
+            newFund = new Funds(fundToEdit.Name, fundToEdit.Address);
             originalFundName = fundToEdit.Name;
             originalAddress = fundToEdit.Address;
             txtName.Text = fundToEdit.Name;
@@ -66,15 +64,15 @@ namespace lab4
                     throw new ArgumentException("Fund name cannot be empty.");
                 if (string.IsNullOrWhiteSpace(address))
                     throw new ArgumentException("Address cannot be empty.");
-                if (!fundName.All(c => char.IsLetter(c) && char.IsWhiteSpace(c)))
+                if (!fundName.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
                     throw new ArgumentException("Fund name must contain only letters and spaces.");
-                currentFund.Name = fundName;
-                currentFund.Address = address;
+                newFund.Name = fundName;
+                newFund.Address = address;
 
                 if (isEdit && fundToEdit != null)
                 {
-                    fundToEdit.Name = currentFund.Name;
-                    fundToEdit.Address = currentFund.Address;
+                    fundToEdit.Name = newFund.Name;
+                    fundToEdit.Address = newFund.Address;
                 }
 
                 isSaved = true;
@@ -108,7 +106,7 @@ namespace lab4
                 MessageBoxResult result = MessageBox.Show(
                     "Чи зберегти зміни?",
                     "Збереження",
-                    MessageBoxButton.YesNoCancel,
+                    MessageBoxButton.YesNo,
                     MessageBoxImage.Question
                 );
 
@@ -126,10 +124,6 @@ namespace lab4
                 else if (result == MessageBoxResult.No)
                 {
                     DialogResult = false;
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
                 }
             }
         }

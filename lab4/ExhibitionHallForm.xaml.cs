@@ -156,7 +156,7 @@ namespace lab4
                 MessageBoxResult result = MessageBox.Show(
                     "Чи зберегти зміни?",
                     "Збереження",
-                    MessageBoxButton.YesNoCancel,
+                    MessageBoxButton.YesNo,
                     MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
@@ -173,10 +173,6 @@ namespace lab4
                 else if (result == MessageBoxResult.No)
                 {
                     DialogResult = false;
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
                 }
             }
         }

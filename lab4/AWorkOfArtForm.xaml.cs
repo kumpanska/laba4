@@ -29,7 +29,6 @@ namespace lab4
         public AWorkOfArtForm()
         {
             InitializeComponent();
-            this.Title = "Create New Artwork";
             currentArtwork = new AWorkOfArt("New Artwork", 2020, 10, 10, 10);
             txtName.Text = currentArtwork.NameOfArt;
             txtYear.Text = currentArtwork.YearOfCreation.ToString();
@@ -41,7 +40,6 @@ namespace lab4
         public AWorkOfArtForm(AWorkOfArt artworkToEdit)
         {
             InitializeComponent();
-            this.Title = "Edit Artwork";
             this.artworkToEdit = artworkToEdit;
             currentArtwork = new AWorkOfArt(
                 artworkToEdit.NameOfArt,
@@ -86,6 +84,8 @@ namespace lab4
                     throw new ArgumentException("Height must be a valid number.");
                 if (!double.TryParse(txtLength.Text, out double length))
                     throw new ArgumentException("Length must be a valid number.");
+                if (!name.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
+                    throw new ArgumentException("Name of a work of art must contain only letters and spaces.");
                 currentArtwork.NameOfArt = name;
                 currentArtwork.YearOfCreation = year;
                 currentArtwork.Width = width;
@@ -114,6 +114,7 @@ namespace lab4
         {
             if (SaveArtwork())
             {
+                isSaved = true;
                 DialogResult = true;
                 this.Close();
             }
@@ -121,6 +122,7 @@ namespace lab4
 
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
+            isSaved = true;
             DialogResult = false;
             this.Close();
         }
@@ -128,7 +130,7 @@ namespace lab4
         {
             if (!isSaved && IsDataChanged())
             {
-                MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -144,10 +146,6 @@ namespace lab4
                 else if (result == MessageBoxResult.No)
                 {
                     DialogResult = false;
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
                 }
             }
         }

@@ -33,7 +33,7 @@ namespace lab4
             lstWorkOfArt.ItemsSource = artworks;
             lstFund.ItemsSource = funds;
             cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
-            this.Title = "Create New Exhibit";
+            isEdit = false;
         }
         public ExhibitForm(List<AWorkOfArt> artworks, List<Funds> fundsList, Exhibit existingExhibit)
         {
@@ -49,8 +49,7 @@ namespace lab4
             lstFund.SelectedItem = existingExhibit.Funds;
             cboPlacement.SelectedItem = existingExhibit.Placement;
             txtCost.Text = existingExhibit.CostOfExhibit.ToString();
-            this.Title = "Edit Exhibit";
-
+            isEdit = true;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
@@ -209,7 +208,7 @@ namespace lab4
         {
             if (DialogResult == null && !isSaved && (IsDataChanged() || isDataChanged))
             {
-                MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+                MessageBoxResult result = MessageBox.Show("Чи зберегти зміни?", "Збереження", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                 if (result == MessageBoxResult.Yes)
                 {
@@ -225,10 +224,6 @@ namespace lab4
                 else if (result == MessageBoxResult.No)
                 {
                     DialogResult = false;
-                }
-                else if (result == MessageBoxResult.Cancel)
-                {
-                    e.Cancel = true;
                 }
             }
         }
