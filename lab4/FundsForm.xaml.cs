@@ -66,7 +66,8 @@ namespace lab4
                     throw new ArgumentException("Fund name cannot be empty.");
                 if (string.IsNullOrWhiteSpace(address))
                     throw new ArgumentException("Address cannot be empty.");
-
+                if (!fundName.All(c => char.IsLetter(c) && char.IsWhiteSpace(c)))
+                    throw new ArgumentException("Fund name must contain only letters and spaces.");
                 currentFund.Name = fundName;
                 currentFund.Address = address;
 

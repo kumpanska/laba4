@@ -20,7 +20,7 @@
 
         <Label Grid.Row="0" Grid.Column="0" Content="Exhibition Hall Name:" Margin="0,10,5,0" VerticalAlignment="Center"/>
         <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtHallName" Margin="10,10,0,0"
-                 HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                 HorizontalAlignment="Stretch" VerticalAlignment="Center" IsReadOnly="True"/>
 
 
         <ListBox Grid.Row="1" Grid.ColumnSpan="2" x:Name="listExhibits" Margin="0,10,0,0"

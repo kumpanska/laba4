@@ -58,7 +58,7 @@ namespace lab4
         {
             listExhibits.Items.Clear();
             listExhibits.Items.Add(hall.ToShortString());
-            listExhibits.Items.Add(new string('-', 50));
+            listExhibits.Items.Add(new string('-', 70));
             foreach (var exhibit in editedExhibits)
             {
                 listExhibits.Items.Add(exhibit.ToString());
