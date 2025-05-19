@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -97,9 +98,13 @@ namespace lab4
             try
             {
                 string hallName = txtHallName.Text;
+                ExhibitionHall tempHall = new ExhibitionHall(hallName);
 
-                if (string.IsNullOrEmpty(hallName))
-                    throw new ArgumentException("Hall name cannot be empty.");
+                if (!ValidateHallWithAttributes(tempHall, out string errorMessage))
+                {
+                    txtError.Text = errorMessage;
+                    return false;
+                }
 
                 hall.NameOfHall = hallName;
                 hall.Exhibits.Clear();
@@ -113,10 +118,11 @@ namespace lab4
             }
             catch (ArgumentException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                txtError.Text = ex.Message;
                 return false;
             }
         }
+
 
         private bool IsDataChanged()
         {
@@ -213,6 +219,44 @@ namespace lab4
                 editedExhibits[selectedIndex - 2] = form.ExhibitResult;
                 isDataChanged = IsDataChanged();
                 UpdateExhibitList();
+            }
+        }
+        private bool ValidateHallWithAttributes(ExhibitionHall hall, out string errorMessage)
+        {
+            var context = new ValidationContext(hall);
+            var results = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(hall, context, results, validateAllProperties: true);
+
+            if (!isValid)
+            {
+                errorMessage = string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+            }
+            else
+            {
+                errorMessage = string.Empty;
+            }
+
+            return isValid;
+        }
+
+        private void txtHallName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var tempHall = new ExhibitionHall(txtHallName.Text);
+                if (!ValidateHallWithAttributes(tempHall, out string validationErrors))
+                {
+                    txtError.Text = validationErrors;
+                }
+                else
+                {
+                    txtError.Text = string.Empty;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                txtError.Text = ex.Message;
             }
         }
 

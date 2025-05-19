@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,7 @@ namespace lab4
             this.NameOfHall = nameOfHall;
             this.Exhibits = new List<Exhibit>();
         }
+        [RegularExpression(@"^[a-zA-Z-а-яА-ЯіІїЇєЄ\s]+$", ErrorMessage = "Name of hall must contain only letters and spaces")]
         public string NameOfHall
         {
             get { return nameOfHall; }
@@ -25,6 +27,7 @@ namespace lab4
                 nameOfHall = value;
             }
         }
+        [Required(ErrorMessage = "Exhibits list is required.")]
         public List<Exhibit> Exhibits
         {
             get { return exhibits; }

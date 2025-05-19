@@ -19,8 +19,18 @@
         </Grid.ColumnDefinitions>
 
         <Label Grid.Row="0" Grid.Column="0" Content="Exhibition Hall Name:" Margin="0,10,5,0" VerticalAlignment="Center"/>
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtHallName" Margin="10,10,0,0"
-                 HorizontalAlignment="Stretch" VerticalAlignment="Center" IsReadOnly="True"/>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBox Grid.Row="0" x:Name="txtHallName" Margin="10,10,0,0"
+        HorizontalAlignment="Stretch" VerticalAlignment="Center"
+        IsReadOnly="False"/>
+            <TextBlock Grid.Row="1" x:Name="txtError" Foreground="DarkRed"
+        Margin="10,0,0,0" TextWrapping="Wrap"/>
+        </Grid>
+
 
         <TextBox Grid.Row="1" x:Name="fullInfoText"
          Margin="0,10,10,0"
