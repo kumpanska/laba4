@@ -19,11 +19,10 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.Column="0" Content="Fund Name:" Margin="0,10,0,0"/>
-        <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtName" Margin="5,10,463,36" Grid.RowSpan="2"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="txtName" Margin="5,10,463,36" Grid.RowSpan="2" LostFocus="txtName_LostFocus"/>
         
         <Label Grid.Row="1" Grid.Column="0" Content="Address:" Margin="0,10,0,0"/>
-        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtAddress" Margin="5,10,463,21" Grid.RowSpan="2"/>
-        
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="txtAddress" Margin="5,10,463,21" Grid.RowSpan="2" LostFocus="txtAddress_LostFocus"/>
         <TextBlock Grid.Row="2" Grid.Column="1" x:Name="txtError" Foreground="DarkRed" TextWrapping="Wrap" Margin="5,5,0,0"/>
         <StackPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
             <Button x:Name="btnSave" Content="Save and close" Width="150" Margin="0,0,10,0" Click="btnSave_Click"/>

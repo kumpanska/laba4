@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
+using System.ComponentModel.DataAnnotations;
 namespace lab4
 {
     /// <summary>
@@ -59,22 +58,13 @@ namespace lab4
             {
                 string fundName = txtName.Text;
                 string address = txtAddress.Text;
-
-                if (string.IsNullOrWhiteSpace(fundName))
-                    throw new ArgumentException("Fund name cannot be empty.");
-                if (string.IsNullOrWhiteSpace(address))
-                    throw new ArgumentException("Address cannot be empty.");
-                if (!fundName.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
-                    throw new ArgumentException("Fund name must contain only letters and spaces.");
                 newFund.Name = fundName;
                 newFund.Address = address;
-
                 if (isEdit && fundToEdit != null)
                 {
                     fundToEdit.Name = newFund.Name;
                     fundToEdit.Address = newFund.Address;
                 }
-
                 isSaved = true;
                 return true;
             }
@@ -84,6 +74,7 @@ namespace lab4
                 return false;
             }
         }
+
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
@@ -127,5 +118,53 @@ namespace lab4
                 }
             }
         }
+        private bool ValidateFundWithAttributes(Funds fund, out string errorMessage)
+        {
+            var context = new ValidationContext(fund);
+            var results = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(fund, context, results, validateAllProperties: true);
+
+            if (!isValid)
+            {
+                errorMessage = string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+            }
+            else
+            {
+                errorMessage = string.Empty;
+            }
+
+            return isValid;
+        }
+        private void txtName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+
+        private void txtAddress_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+
+        private void ValidateOnLostFocus()
+        {
+            try
+            {
+                var tempFund = new Funds(txtName.Text, txtAddress.Text);
+                if (!ValidateFundWithAttributes(tempFund, out string validationErrors))
+                {
+                    txtError.Text = validationErrors;
+                }
+                else
+                {
+                    txtError.Text = string.Empty;
+                }
+            } 
+            catch (ArgumentException ex)
+            {
+                txtError.Text = ex.Message;
+            }
+        }
+
     }
 }

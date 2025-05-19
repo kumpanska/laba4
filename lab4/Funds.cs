@@ -4,9 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Net;
 namespace lab4
 {
-    public class Funds
+    public  partial class Funds
     {
         private string nameOfFund;
         private string addressOfFund;
@@ -15,6 +18,8 @@ namespace lab4
             this.Name = nameOfFund;
             this.Address = addressOfFund;
         }
+        [Required(ErrorMessage = "Fund name is required")]
+        [RegularExpression(@"^[a-zA-Z-а-яА-ЯіІїЇєЄ\s]+$", ErrorMessage = "Fund name must contain only letters and spaces")]
         public string Name
         {
             get { return nameOfFund; }
@@ -25,6 +30,8 @@ namespace lab4
                 nameOfFund = value;
             }
         }
+        [Required(ErrorMessage = "Address is required.")]
+        [RegularExpression(@"^[a-zA-Z-а-яА-ЯіІїЇєЄ\s\d/,\.]+$", ErrorMessage = "Address contains invalid characters")]
         public string Address
         {
             get { return addressOfFund; }
@@ -34,6 +41,7 @@ namespace lab4
                 {
                     throw new ArgumentException("Address can't be empty");
                 }
+
                 if (!Regex.IsMatch(value, @"[a-zA-Zа-яА-ЯіІїЇєЄ]"))
                 {
                     throw new ArgumentException("Address must contain at least one letter.");
@@ -44,7 +52,7 @@ namespace lab4
                 }
                 if (!value.Contains(','))
                 {
-                    throw new ArgumentException("Address must contain a comma (to separate street and building)");
+                    throw new ArgumentException("Address must contain a comma (to separate street and building(or city))");
                 }
                 addressOfFund = value;
             }
