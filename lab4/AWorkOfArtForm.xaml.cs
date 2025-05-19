@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace lab4
 {
@@ -21,7 +23,7 @@ namespace lab4
     {
         private string originalName;
         private int originalYear;
-        private double originalWidth, originalHeight, originalLength;
+        private double originalWidth, originalHeight, originalDepth;
         private AWorkOfArt currentArtwork;
         private AWorkOfArt artworkToEdit;
         private bool isSaved = false;
@@ -34,7 +36,7 @@ namespace lab4
             txtYear.Text = currentArtwork.YearOfCreation.ToString();
             txtWidth.Text = currentArtwork.Width.ToString();
             txtHeight.Text = currentArtwork.Height.ToString();
-            txtLength.Text = currentArtwork.Length.ToString();
+            txtDepth.Text = currentArtwork.Depth.ToString();
             isEdit = false;
         }
         public AWorkOfArtForm(AWorkOfArt artworkToEdit)
@@ -46,20 +48,20 @@ namespace lab4
                 artworkToEdit.YearOfCreation,
                 artworkToEdit.Width,
                 artworkToEdit.Height,
-                artworkToEdit.Length
+                artworkToEdit.Depth
             );
 
             originalName = artworkToEdit.NameOfArt;
             originalYear = artworkToEdit.YearOfCreation;
             originalWidth = artworkToEdit.Width;
             originalHeight = artworkToEdit.Height;
-            originalLength = artworkToEdit.Length;
+            originalDepth = artworkToEdit.Depth;
 
             txtName.Text = artworkToEdit.NameOfArt;
             txtYear.Text = artworkToEdit.YearOfCreation.ToString();
             txtWidth.Text = artworkToEdit.Width.ToString();
             txtHeight.Text = artworkToEdit.Height.ToString();
-            txtLength.Text = artworkToEdit.Length.ToString();
+            txtDepth.Text = artworkToEdit.Depth.ToString();
             isEdit = true;
         }
         public AWorkOfArt ArtworkResult => currentArtwork;
@@ -69,28 +71,32 @@ namespace lab4
                 || txtYear.Text != originalYear.ToString()
                 || txtWidth.Text != originalWidth.ToString()
                 || txtHeight.Text != originalHeight.ToString()
-                || txtLength.Text != originalLength.ToString();
+                || txtDepth.Text != originalDepth.ToString();
         }
         private bool SaveArtwork()
         {
             try
             {
-                string name = txtName.Text;
                 if (!int.TryParse(txtYear.Text, out int year))
                     throw new ArgumentException("Year must be a valid integer.");
                 if (!double.TryParse(txtWidth.Text, out double width))
                     throw new ArgumentException("Width must be a valid number.");
                 if (!double.TryParse(txtHeight.Text, out double height))
                     throw new ArgumentException("Height must be a valid number.");
-                if (!double.TryParse(txtLength.Text, out double length))
-                    throw new ArgumentException("Length must be a valid number.");
-                if (!name.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
-                    throw new ArgumentException("Name of a work of art must contain only letters and spaces.");
-                currentArtwork.NameOfArt = name;
-                currentArtwork.YearOfCreation = year;
-                currentArtwork.Width = width;
-                currentArtwork.Height = height;
-                currentArtwork.Length = length;
+                if (!double.TryParse(txtDepth.Text, out double depth))
+                    throw new ArgumentException("Depth must be a valid number.");
+
+                var tempArtwork = new AWorkOfArt(txtName.Text, year, width, height, depth);
+                if (!ValidateFundWithAttributes(tempArtwork, out string validationErrors))
+                {
+                    txtError.Text = validationErrors;
+                    return false;
+                }
+                currentArtwork.NameOfArt = tempArtwork.NameOfArt;
+                currentArtwork.YearOfCreation = tempArtwork.YearOfCreation;
+                currentArtwork.Width = tempArtwork.Width;
+                currentArtwork.Height = tempArtwork.Height;
+                currentArtwork.Depth = tempArtwork.Depth;
 
                 if (isEdit)
                 {
@@ -98,15 +104,20 @@ namespace lab4
                     artworkToEdit.YearOfCreation = currentArtwork.YearOfCreation;
                     artworkToEdit.Width = currentArtwork.Width;
                     artworkToEdit.Height = currentArtwork.Height;
-                    artworkToEdit.Length = currentArtwork.Length;
+                    artworkToEdit.Depth = currentArtwork.Depth;
                 }
-
                 isSaved = true;
+                txtError.Text = string.Empty;
                 return true;
             }
             catch (ArgumentException ex)
             {
                 txtError.Text = ex.Message;
+                return false;
+            }
+            catch (FormatException ex)
+            {
+                txtError.Text = "Invalid data: " + ex.Message;
                 return false;
             }
         }
@@ -149,5 +160,74 @@ namespace lab4
                 }
             }
         }
+        private bool ValidateFundWithAttributes(AWorkOfArt workOfArt, out string errorMessage)
+        {
+            var context = new ValidationContext(workOfArt);
+            var results = new List<ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(workOfArt, context, results, validateAllProperties: true);
+
+            if (!isValid)
+            {
+                errorMessage = string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+            }
+            else
+            {
+                errorMessage = string.Empty;
+            }
+
+            return isValid;
+        }
+        private void txtName_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+        private void txtYear_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+        private void txtWidth_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+        private void txtHeight_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+        private void txtDepth_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+        private void ValidateOnLostFocus()
+        {
+            try
+            {
+                string name = txtName.Text;
+                if (!int.TryParse(txtYear.Text, out int year))
+                    throw new ArgumentException("Year must be a valid integer.");
+                if (!double.TryParse(txtWidth.Text, out double width))
+                    throw new ArgumentException("Width must be a valid number.");
+                if (!double.TryParse(txtHeight.Text, out double height))
+                    throw new ArgumentException("Height must be a valid number.");
+                if (!double.TryParse(txtDepth.Text, out double depth))
+                    throw new ArgumentException("Depth must be a valid number.");
+                
+                var tempArtwork = new AWorkOfArt(name, year, width, height, depth);
+
+                if (!ValidateFundWithAttributes(tempArtwork, out string validationErrors))
+                {
+                    txtError.Text = validationErrors;
+                }
+                else
+                {
+                    txtError.Text = string.Empty;
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                txtError.Text = ex.Message;
+            }
+        }
+
     }
 }

@@ -15,7 +15,7 @@ namespace lab4
                 dto.YearOfCreation,
                 dto.Width,
                 dto.Height,
-                dto.Length
+                dto.Depth
             );
         }
         public static DTOAWorkOfArt ToDTO(AWorkOfArt artwork)
@@ -26,7 +26,7 @@ namespace lab4
                 YearOfCreation = artwork.YearOfCreation,
                 Width = artwork.Width,
                 Height = artwork.Height,
-                Length = artwork.Length
+                Depth = artwork.Depth
             };
         }
     }

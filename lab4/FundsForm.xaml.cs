@@ -58,6 +58,12 @@ namespace lab4
             {
                 string fundName = txtName.Text;
                 string address = txtAddress.Text;
+                Funds tempFund = new Funds(fundName,address);
+                if (!ValidateFundWithAttributes(tempFund, out string errorMessage))
+                {
+                    txtError.Text = errorMessage;
+                    return false;
+                }
                 newFund.Name = fundName;
                 newFund.Address = address;
                 if (isEdit && fundToEdit != null)

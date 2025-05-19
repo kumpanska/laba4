@@ -18,7 +18,6 @@ namespace lab4
             this.Name = nameOfFund;
             this.Address = addressOfFund;
         }
-        [Required(ErrorMessage = "Fund name is required")]
         [RegularExpression(@"^[a-zA-Z-а-яА-ЯіІїЇєЄ\s]+$", ErrorMessage = "Fund name must contain only letters and spaces")]
         public string Name
         {
@@ -30,7 +29,6 @@ namespace lab4
                 nameOfFund = value;
             }
         }
-        [Required(ErrorMessage = "Address is required.")]
         [RegularExpression(@"^[a-zA-Z-а-яА-ЯіІїЇєЄ\s\d/,\.]+$", ErrorMessage = "Address contains invalid characters")]
         public string Address
         {
