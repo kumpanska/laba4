@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace lab4
 {
@@ -61,8 +62,16 @@ namespace lab4
             listExhibits.Items.Add(new string('-', 70));
             foreach (var exhibit in editedExhibits)
             {
-                listExhibits.Items.Add(exhibit.ToString());
+                listExhibits.Items.Add(
+                    $"Exhibit: {exhibit.WorkOfArt.NameOfArt}, " +
+                    $"Dimensions: {exhibit.WorkOfArt.Depth}x{exhibit.WorkOfArt.Width}x{exhibit.WorkOfArt.Height}, " +
+                    $"Year: {exhibit.WorkOfArt.YearOfCreation}, " +
+                    $"Cost: {exhibit.CostOfExhibit} $"
+                );
             }
+            ExhibitionHall tempHall = new ExhibitionHall(txtHallName.Text);
+            tempHall.Exhibits.AddRange(editedExhibits);
+            fullInfoText.Text = tempHall.ToString();
         }
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
@@ -113,22 +122,29 @@ namespace lab4
         {
             if (txtHallName.Text != originalHallName)
                 return true;
+
             if (editedExhibits.Count != originalExhibits.Count)
                 return true;
-            if (isDataChanged)
-                return true;
+
             for (int i = 0; i < editedExhibits.Count; i++)
             {
-                var originalExhibit = originalExhibits[i];
-                var editedExhibit = editedExhibits[i];
+                var e = editedExhibits[i];
+                var o = originalExhibits[i];
 
-                if (editedExhibit.WorkOfArt != originalExhibit.WorkOfArt ||
-                    editedExhibit.Funds != originalExhibit.Funds ||
-                    editedExhibit.Placement != originalExhibit.Placement ||
-                    editedExhibit.CostOfExhibit != originalExhibit.CostOfExhibit)
-                {
+                if (e.Placement != o.Placement ||
+                    e.CostOfExhibit != o.CostOfExhibit)
                     return true;
-                }
+
+                if (e.WorkOfArt.NameOfArt != o.WorkOfArt.NameOfArt ||
+                    e.WorkOfArt.YearOfCreation != o.WorkOfArt.YearOfCreation ||
+                    e.WorkOfArt.Width != o.WorkOfArt.Width ||
+                    e.WorkOfArt.Height != o.WorkOfArt.Height ||
+                    e.WorkOfArt.Depth != o.WorkOfArt.Depth)
+                    return true;
+
+                if (e.Funds.Name != o.Funds.Name ||
+                    e.Funds.Address != o.Funds.Address)
+                    return true;
             }
 
             return false;
@@ -193,10 +209,13 @@ namespace lab4
             ExhibitForm form = new ExhibitForm(artworks, fundsList, selectedExhibit);
             if (form.ShowDialog() == true)
             {
-                isDataChanged = true;
+             
+                editedExhibits[selectedIndex - 2] = form.ExhibitResult;
+                isDataChanged = IsDataChanged();
                 UpdateExhibitList();
             }
         }
+
 
     }
 }

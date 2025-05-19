@@ -20,42 +20,81 @@ namespace lab4
     public partial class ExhibitForm : Window
     {
         public Exhibit ExhibitResult { get; private set; }
-        private List<AWorkOfArt> artworks;
-        private List<Funds> fundsList;
+        private List<AWorkOfArt> originalArtworks;
+        private List<Funds> originalFundsList;
+        private List<AWorkOfArt> workingArtworks;
+        private List<Funds> workingFundsList;
         private bool isSaved = false;
         private bool isDataChanged = false;
         private bool isEdit = false;
         public ExhibitForm(List<AWorkOfArt> artworks, List<Funds> funds)
         {
             InitializeComponent();
-            this.artworks = artworks;
-            this.fundsList = funds;
-            lstWorkOfArt.ItemsSource = artworks;
-            lstFund.ItemsSource = funds;
-            cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
+            this.originalArtworks = artworks;
+            this.originalFundsList = funds;
+            InitializeWorkingData(artworks, funds);
             isEdit = false;
         }
+
         public ExhibitForm(List<AWorkOfArt> artworks, List<Funds> fundsList, Exhibit existingExhibit)
         {
             InitializeComponent();
-            this.artworks = artworks;
-            this.fundsList = fundsList;
+            this.originalArtworks = artworks;
+            this.originalFundsList = fundsList;
             this.ExhibitResult = existingExhibit;
+            InitializeWorkingData(artworks, fundsList);
             this.isEdit = true;
-            lstWorkOfArt.ItemsSource = artworks;
-            lstFund.ItemsSource = fundsList;
-            cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
-            lstWorkOfArt.SelectedItem = existingExhibit.WorkOfArt;
-            lstFund.SelectedItem = existingExhibit.Funds;
+
+            AWorkOfArt workingArtwork = workingArtworks.FirstOrDefault(a =>
+                a.NameOfArt == existingExhibit.WorkOfArt.NameOfArt &&
+                a.YearOfCreation == existingExhibit.WorkOfArt.YearOfCreation);
+
+            Funds workingFund = workingFundsList.FirstOrDefault(f =>
+                f.Name == existingExhibit.Funds.Name &&
+                f.Address == existingExhibit.Funds.Address);
+
+            lstWorkOfArt.SelectedItem = workingArtwork;
+            lstFund.SelectedItem = workingFund;
             cboPlacement.SelectedItem = existingExhibit.Placement;
             txtCost.Text = existingExhibit.CostOfExhibit.ToString();
-            isEdit = true;
+        }
+        private void InitializeWorkingData(List<AWorkOfArt> artworks, List<Funds> funds)
+        {
+            this.workingArtworks = CreateDeepCopyOfArtworks(artworks);
+            this.workingFundsList = CreateDeepCopyOfFunds(funds);
+            lstWorkOfArt.ItemsSource = workingArtworks;
+            lstFund.ItemsSource = workingFundsList;
+            cboPlacement.ItemsSource = Enum.GetValues(typeof(Placement));
+        }
+        private List<AWorkOfArt> CreateDeepCopyOfArtworks(List<AWorkOfArt> source)
+        {
+            List<AWorkOfArt> result = new List<AWorkOfArt>();
+            foreach (var item in source)
+            {
+                result.Add(new AWorkOfArt(
+                    item.NameOfArt,
+                    item.YearOfCreation,
+                    item.Width,
+                    item.Height,
+                    item.Depth));
+            }
+            return result;
+        }
+        private List<Funds> CreateDeepCopyOfFunds(List<Funds> source)
+        {
+            List<Funds> result = new List<Funds>();
+            foreach (var item in source)
+            {
+                result.Add(new Funds(item.Name, item.Address));
+            }
+            return result;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (SaveExhibit())
             {
+                ChangesToOriginalLists();
                 isSaved = true;
                 DialogResult = true;
                 Close();
@@ -68,6 +107,45 @@ namespace lab4
             DialogResult = false;
             Close();
         }
+        private void ChangesToOriginalLists()
+        {
+            foreach (var workingArt in workingArtworks)
+            {
+                var existing = originalArtworks.FirstOrDefault(a =>
+                    a.NameOfArt == workingArt.NameOfArt &&
+                    a.YearOfCreation == workingArt.YearOfCreation);
+
+                if (existing == null)
+                {
+                    originalArtworks.Add(new AWorkOfArt(
+                        workingArt.NameOfArt,
+                        workingArt.YearOfCreation,
+                        workingArt.Width,
+                        workingArt.Height,
+                        workingArt.Depth));
+                }
+                else
+                {
+                    existing.Width = workingArt.Width;
+                    existing.Height = workingArt.Height;
+                    existing.Depth = workingArt.Depth;
+                }
+            }
+
+            foreach (var workingFund in workingFundsList)
+            {
+                var existing = originalFundsList.FirstOrDefault(f =>
+                    f.Name == workingFund.Name &&
+                    f.Address == workingFund.Address);
+
+                if (existing == null)
+                {
+                    originalFundsList.Add(new Funds(workingFund.Name, workingFund.Address));
+                }
+            }
+        }
+
+
         private bool IsDataChanged()
         {
             if (!isEdit)
@@ -79,13 +157,17 @@ namespace lab4
             }
             else
             {
-                return (lstWorkOfArt.SelectedItem != ExhibitResult.WorkOfArt ||
-                      lstFund.SelectedItem != ExhibitResult.Funds ||
-                      (Placement)cboPlacement.SelectedItem != ExhibitResult.Placement ||
-                      txtCost.Text != ExhibitResult.CostOfExhibit.ToString()
+                return (lstWorkOfArt.SelectedItem != null &&
+                        ((AWorkOfArt)lstWorkOfArt.SelectedItem).NameOfArt != ExhibitResult.WorkOfArt.NameOfArt ||
+                        lstFund.SelectedItem != null &&
+                        ((Funds)lstFund.SelectedItem).Name != ExhibitResult.Funds.Name ||
+                        cboPlacement.SelectedItem != null &&
+                        (Placement)cboPlacement.SelectedItem != ExhibitResult.Placement ||
+                        txtCost.Text != ExhibitResult.CostOfExhibit.ToString()
                       );
             }
         }
+
         private bool SaveExhibit()
         {
             try
@@ -103,17 +185,40 @@ namespace lab4
                 AWorkOfArt selectedArtwork = lstWorkOfArt.SelectedItem as AWorkOfArt;
                 Funds selectedFund = lstFund.SelectedItem as Funds;
                 Placement selectedPlacement = (Placement)cboPlacement.SelectedItem;
+                AWorkOfArt originalArtwork = originalArtworks.FirstOrDefault(a =>
+                    a.NameOfArt == selectedArtwork.NameOfArt &&
+                    a.YearOfCreation == selectedArtwork.YearOfCreation);
+
+                if (originalArtwork == null)
+                {
+                    originalArtwork = new AWorkOfArt(
+                        selectedArtwork.NameOfArt,
+                        selectedArtwork.YearOfCreation,
+                        selectedArtwork.Width,
+                        selectedArtwork.Height,
+                        selectedArtwork.Depth);
+                    originalArtworks.Add(originalArtwork);
+                }
+                Funds originalFund = originalFundsList.FirstOrDefault(f =>
+                    f.Name == selectedFund.Name &&
+                    f.Address == selectedFund.Address);
+                if (originalFund == null)
+                {
+                    originalFund = new Funds(selectedFund.Name, selectedFund.Address);
+                    originalFundsList.Add(originalFund);
+                }
                 if (isEdit)
                 {
-                    ExhibitResult.WorkOfArt = selectedArtwork;
-                    ExhibitResult.Funds = selectedFund;
+                    ExhibitResult.WorkOfArt = originalArtwork;
+                    ExhibitResult.Funds = originalFund;
                     ExhibitResult.Placement = selectedPlacement;
                     ExhibitResult.CostOfExhibit = parsedCost;
                 }
                 else
                 {
-                    ExhibitResult = new Exhibit(selectedArtwork, selectedFund, selectedPlacement, parsedCost);
+                    ExhibitResult = new Exhibit(originalArtwork, originalFund, selectedPlacement, parsedCost);
                 }
+
                 isSaved = true;
                 return true;
             }
@@ -131,15 +236,12 @@ namespace lab4
             FundsForm form = new FundsForm(newFund);
             if (form.ShowDialog() == true)
             {
-                Funds saveFund = form.FundResult;
-                fundsList.Add(saveFund);
+                Funds saveFund = new Funds(form.FundResult.Name, form.FundResult.Address);
+                workingFundsList.Add(saveFund);
                 lstFund.ItemsSource = null;
-                lstFund.ItemsSource = fundsList;
+                lstFund.ItemsSource = workingFundsList;
+                lstFund.SelectedItem = saveFund;
                 isDataChanged = true;
-                if (isEdit)
-                {
-                    ExhibitResult.Funds = saveFund;
-                }
             }
         }
 
@@ -149,15 +251,17 @@ namespace lab4
             AWorkOfArtForm form = new AWorkOfArtForm(newArtwork);
             if (form.ShowDialog() == true)
             {
-                AWorkOfArt savedArtwork = form.ArtworkResult;
-                artworks.Add(savedArtwork);
+                AWorkOfArt savedArtwork = new AWorkOfArt(
+                    form.ArtworkResult.NameOfArt,
+                    form.ArtworkResult.YearOfCreation,
+                    form.ArtworkResult.Width,
+                    form.ArtworkResult.Height,
+                    form.ArtworkResult.Depth);
+                workingArtworks.Add(savedArtwork);
                 lstWorkOfArt.ItemsSource = null;
-                lstWorkOfArt.ItemsSource = artworks;
+                lstWorkOfArt.ItemsSource = workingArtworks;
+                lstWorkOfArt.SelectedItem = savedArtwork;
                 isDataChanged = true;
-                if (isEdit)
-                {
-                    ExhibitResult.WorkOfArt = savedArtwork;
-                }
             }
         }
 
@@ -166,37 +270,48 @@ namespace lab4
             AWorkOfArt selectedArtwork = lstWorkOfArt.SelectedItem as AWorkOfArt;
             if (selectedArtwork != null)
             {
-                AWorkOfArtForm form = new AWorkOfArtForm(selectedArtwork);
+                AWorkOfArt artworkCopy = new AWorkOfArt(
+                    selectedArtwork.NameOfArt,
+                    selectedArtwork.YearOfCreation,
+                    selectedArtwork.Width,
+                    selectedArtwork.Height,
+                    selectedArtwork.Depth);
+
+                AWorkOfArtForm form = new AWorkOfArtForm(artworkCopy);
                 if (form.ShowDialog() == true)
                 {
+                    selectedArtwork.NameOfArt = artworkCopy.NameOfArt;
+                    selectedArtwork.YearOfCreation = artworkCopy.YearOfCreation;
+                    selectedArtwork.Width = artworkCopy.Width;
+                    selectedArtwork.Height = artworkCopy.Height;
+                    selectedArtwork.Depth = artworkCopy.Depth;
                     lstWorkOfArt.ItemsSource = null;
-                    lstWorkOfArt.ItemsSource = artworks;
-                    if (isEdit)
-                    {
-                        ExhibitResult.WorkOfArt = selectedArtwork;
-                    }
+                    lstWorkOfArt.ItemsSource = workingArtworks;
+                    lstWorkOfArt.SelectedItem = selectedArtwork;
+                    isDataChanged = true;
                 }
-                
             }
             else
             {
                 MessageBox.Show("Please select a work of art to edit.");
             }
         }
+
         private void btnEditFund_Click(object sender, RoutedEventArgs e)
         {
             Funds selectedFund = lstFund.SelectedItem as Funds;
             if (selectedFund != null)
             {
-                FundsForm form = new FundsForm(selectedFund);
+                Funds fundCopy = new Funds(selectedFund.Name, selectedFund.Address);
+                FundsForm form = new FundsForm(fundCopy);
                 if (form.ShowDialog() == true)
                 {
+                    selectedFund.Name = fundCopy.Name;
+                    selectedFund.Address = fundCopy.Address;
                     lstFund.ItemsSource = null;
-                    lstFund.ItemsSource = fundsList;
-                    if (isEdit)
-                    {
-                        ExhibitResult.Funds = selectedFund;
-                    }
+                    lstFund.ItemsSource = workingFundsList;
+                    lstFund.SelectedItem = selectedFund;
+                    isDataChanged = true;
                 }
             }
             else
@@ -204,6 +319,7 @@ namespace lab4
                 MessageBox.Show("Please select a fund to edit.");
             }
         }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (DialogResult == null && !isSaved && (IsDataChanged() || isDataChanged))
@@ -218,6 +334,7 @@ namespace lab4
                     }
                     else
                     {
+                        ChangesToOriginalLists();
                         DialogResult = true;
                     }
                 }

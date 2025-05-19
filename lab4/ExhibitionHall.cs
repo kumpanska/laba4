@@ -55,7 +55,13 @@ namespace lab4
             {
                 foreach (Exhibit exhibit in exhibits)
                 {
-                    sb.AppendLine($"{exhibit.WorkOfArt.NameOfArt}: ({exhibit.WorkOfArt.YearOfCreation}), cost: {exhibit.CostOfExhibit}, overall size: {exhibit.WorkOfArt.Length}x{exhibit.WorkOfArt.Width}x{exhibit.WorkOfArt.Height}$");
+                    sb.AppendLine($"Exhibit: {exhibit.WorkOfArt.NameOfArt}");
+                    sb.AppendLine($"Fund: {exhibit.Funds.Name}, address: {exhibit.Funds.Address}");
+                    sb.AppendLine($"Exhibit Dimensions: {exhibit.WorkOfArt.Depth}x{exhibit.WorkOfArt.Width}x{exhibit.WorkOfArt.Height}");
+                    sb.AppendLine($"Cost of Exhibit: {exhibit.CostOfExhibit}");
+                    sb.AppendLine($"Creation Year: {exhibit.WorkOfArt.YearOfCreation}");
+                    sb.AppendLine($"Placement: {exhibit.Placement}");
+                    sb.AppendLine("--------------");
                 }
             }
             return sb.ToString();
