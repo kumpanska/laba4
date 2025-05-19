@@ -87,7 +87,7 @@ namespace lab4
                     throw new ArgumentException("Depth must be a valid number.");
 
                 var tempArtwork = new AWorkOfArt(txtName.Text, year, width, height, depth);
-                if (!ValidateFundWithAttributes(tempArtwork, out string validationErrors))
+                if (!ValidateWorkOfArtWithAttributes(tempArtwork, out string validationErrors))
                 {
                     txtError.Text = validationErrors;
                     return false;
@@ -160,7 +160,7 @@ namespace lab4
                 }
             }
         }
-        private bool ValidateFundWithAttributes(AWorkOfArt workOfArt, out string errorMessage)
+        private bool ValidateWorkOfArtWithAttributes(AWorkOfArt workOfArt, out string errorMessage)
         {
             var context = new ValidationContext(workOfArt);
             var results = new List<ValidationResult>();
@@ -214,7 +214,7 @@ namespace lab4
                 
                 var tempArtwork = new AWorkOfArt(name, year, width, height, depth);
 
-                if (!ValidateFundWithAttributes(tempArtwork, out string validationErrors))
+                if (!ValidateWorkOfArtWithAttributes(tempArtwork, out string validationErrors))
                 {
                     txtError.Text = validationErrors;
                 }

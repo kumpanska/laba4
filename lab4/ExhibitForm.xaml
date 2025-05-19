@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
         mc:Ignorable="d"
-        Title="ExhibitForm" Height="500" Width="800" MinWidth="600" MinHeight="400" Closing="Window_Closing">
+        Title="ExhibitForm" Height="500" Width="800" MinWidth="700" MinHeight="400" Closing="Window_Closing">
 
     <Grid Background="Beige" Margin="10">
         <Grid.RowDefinitions>
@@ -15,9 +15,9 @@
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.2*"/>
-                <ColumnDefinition Width="1.2*"/>
-                <ColumnDefinition Width="0.6*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
@@ -31,7 +31,7 @@
 
             <Label Grid.Row="0" Grid.Column="0" Content="Work of Art:" VerticalAlignment="Center" Margin="0,0,5,5"/>
             <ListBox x:Name="lstWorkOfArt" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,10"
-                     DisplayMemberPath="NameOfArt" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstWorkOfArt_SelectionChanged"/>
+                     DisplayMemberPath="NameOfArt" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstWorkOfArt_SelectionChanged" LostFocus="Control_LostFocus"/>
             <Grid Grid.Row="1" Grid.Column="2" Margin="5,0,0,10">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -42,14 +42,14 @@
             </Grid>
 
             <Label Grid.Row="2" Grid.Column="0" Content="Placement:" VerticalAlignment="Center" Margin="0,0,5,5"/>
-            <ComboBox x:Name="cboPlacement" Grid.Row="2" Grid.ColumnSpan="2" Margin="78,2,78,3"/>
+            <ComboBox x:Name="cboPlacement" Grid.Row="2" Grid.ColumnSpan="2" Margin="78,2,78,3" LostFocus="Control_LostFocus"/>
 
             <Label Grid.Row="3" Grid.Column="0" Content="Cost:" VerticalAlignment="Center" Margin="0,0,5,5"/>
-            <TextBox x:Name="txtCost" Grid.Row="3" Grid.ColumnSpan="2" Margin="78,5,78,0"/>
+            <TextBox x:Name="txtCost" Grid.Row="3" Grid.ColumnSpan="2" Margin="78,5,78,0" LostFocus="Control_LostFocus"/>
 
             <Label Grid.Row="4" Grid.Column="0" Content="Fund:" VerticalAlignment="Center" Margin="0,10,5,5"/>
             <ListBox x:Name="lstFund" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,5,0"
-                     DisplayMemberPath="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstFund_SelectionChanged"/>
+                       DisplayMemberPath="Name" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="lstFund_SelectionChanged" LostFocus="Control_LostFocus"/>
             <Grid Grid.Row="5" Grid.Column="2" Margin="5,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

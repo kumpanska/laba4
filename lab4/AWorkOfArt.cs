@@ -44,8 +44,7 @@ namespace lab4
                 yearOfCreation = value;
             }
         }
-       
-        [Required(ErrorMessage ="Width is required")]
+
         [Range(10,5000, ErrorMessage ="Value for width must be between 10 and 5000.")]
         public double Width
         {
@@ -57,7 +56,6 @@ namespace lab4
                 width = value;
             }
         }
-        [Required(ErrorMessage = "Height is required")]
         [Range(10, 2000, ErrorMessage = "Value for height must be between 20 and 2000.")]
         public double Height
         {
@@ -69,7 +67,6 @@ namespace lab4
                 height = value;
             }
         }
-        [Required(ErrorMessage = "Depth is required")]
         [Range(0.5, 15, ErrorMessage = "Value for depth must be between 0,5 and 15.")]
         public double Depth
         {

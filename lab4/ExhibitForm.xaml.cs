@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace lab4
 {
@@ -92,7 +94,7 @@ namespace lab4
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (SaveExhibit())
+            if (ValidateOnLostFocus()&&SaveExhibit())
             {
                 ChangesToOriginalLists();
                 isSaved = true;
@@ -352,5 +354,79 @@ namespace lab4
         {
             btnEditFund.IsEnabled = lstFund.SelectedItem != null;
         }
+        private bool ValidateExhibitWithAttributes(Exhibit exhibit, out string errorMessage)
+        {
+            var context = new ValidationContext(exhibit);
+            var results = new List<System.ComponentModel.DataAnnotations.ValidationResult>();
+
+            bool isValid = Validator.TryValidateObject(exhibit, context, results, validateAllProperties: true);
+
+            if (!isValid)
+            {
+                errorMessage = string.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
+            }
+            else
+            {
+                errorMessage = string.Empty;
+            }
+
+            return isValid;
+        }
+        private bool ValidateOnLostFocus()
+        {
+            try
+            {
+                if (lstWorkOfArt.SelectedItem == null)
+                {
+                    txtError.Text = "Select a work of art";
+                    return false;
+                }
+
+                if (lstFund.SelectedItem == null)
+                {
+                    txtError.Text = "Select a fund";
+                    return false;
+                }
+
+                if (cboPlacement.SelectedItem == null)
+                {
+                    txtError.Text = "Select a placement";
+                    return false;
+                }
+
+                if (!int.TryParse(txtCost.Text, out int cost))
+                {
+                    txtError.Text = "Enter a valid cost";
+                    return false;
+                }
+
+                var selectedArtwork = lstWorkOfArt.SelectedItem as AWorkOfArt;
+                var selectedFund = lstFund.SelectedItem as Funds;
+                var selectedPlacement = (Placement)cboPlacement.SelectedItem;
+
+                Exhibit exhibit = new Exhibit(selectedArtwork, selectedFund, selectedPlacement, cost);
+
+                if (!ValidateExhibitWithAttributes(exhibit, out string errorMessage))
+                {
+                    txtError.Text = errorMessage;
+                    return false;
+                }
+
+                txtError.Text = string.Empty;
+                return true;
+            }
+            catch (Exception ex)
+            {
+                txtError.Text = ex.Message;
+                return false;
+            }
+        }
+
+
+        private void Control_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ValidateOnLostFocus();
+        }
+
     }
 }

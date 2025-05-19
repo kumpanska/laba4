@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:lab4"
         mc:Ignorable="d"
-        Title="AWorkOfArtForm" Height="450" Width="800" Closing="Window_Closing">
+        Title="AWorkOfArtForm" Height="450" Width="800" MinWidth="700" MinHeight="400" Closing="Window_Closing">
     <Grid Margin="10" Background="Beige">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
