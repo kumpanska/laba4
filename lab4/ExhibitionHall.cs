@@ -27,7 +27,6 @@ namespace lab4
                 nameOfHall = value;
             }
         }
-        [Required(ErrorMessage = "Exhibits list is required.")]
         public List<Exhibit> Exhibits
         {
             get { return exhibits; }
@@ -61,7 +60,7 @@ namespace lab4
                     sb.AppendLine($"Exhibit: {exhibit.WorkOfArt.NameOfArt}");
                     sb.AppendLine($"Fund: {exhibit.Funds.Name}, address: {exhibit.Funds.Address}");
                     sb.AppendLine($"Exhibit Dimensions: {exhibit.WorkOfArt.Depth}x{exhibit.WorkOfArt.Width}x{exhibit.WorkOfArt.Height}");
-                    sb.AppendLine($"Cost of Exhibit: {exhibit.CostOfExhibit}");
+                    sb.AppendLine($"Cost of Exhibit: {exhibit.CostOfExhibit} $");
                     sb.AppendLine($"Creation Year: {exhibit.WorkOfArt.YearOfCreation}");
                     sb.AppendLine($"Placement: {exhibit.Placement}");
                     sb.AppendLine("--------------");

@@ -29,8 +29,6 @@ namespace lab4
             {
                 if (string.IsNullOrEmpty(value))
                     throw new ArgumentException("Name of a work of art can't be empty");
-                if (!value.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
-                    throw new ArgumentException("Name of a work of art must contain only letters and spaces.");
                 nameOfArt = value;
             }
         }

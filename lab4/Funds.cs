@@ -44,10 +44,6 @@ namespace lab4
                 {
                     throw new ArgumentException("Address must contain at least one letter.");
                 }
-                if (!Regex.IsMatch(value, @"\d+(/\d+)?"))
-                {
-                    throw new ArgumentException("Address must contain at least one number, optionally in format like '7/1'.");
-                }
                 if (!value.Contains(','))
                 {
                     throw new ArgumentException("Address must contain a comma (to separate street and building(or city))");

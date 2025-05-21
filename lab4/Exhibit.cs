@@ -19,7 +19,6 @@ namespace lab4
             this.Placement = placement;
             this.CostOfExhibit = costOfExhibit;
         }
-        [Required(ErrorMessage = "Work of art is required.")]
         public AWorkOfArt WorkOfArt
         {
             get { return workOfArt; }
@@ -30,7 +29,6 @@ namespace lab4
                 workOfArt = value;
             }
         }
-        [Required(ErrorMessage = "Funds information is required.")]
         public Funds Funds
         {
             get { return funds; }
